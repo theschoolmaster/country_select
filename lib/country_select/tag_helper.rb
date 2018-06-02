@@ -78,11 +78,19 @@ module CountrySelect
       I18n.with_locale(locale) do
         country_list = country_codes.map do |code_or_name|
           if country = ISO3166::Country.new(code_or_name)
-            code = country.alpha2
+            code = country.name
           elsif country = ISO3166::Country.find_by_name(code_or_name)
             code = country.first
             country = ISO3166::Country.new(code)
+            code = country.name
           end
+
+          # fix up new "of america"
+          if code == 'United States of America'
+            code = 'United States'
+          end
+
+          Rails.logger.debug code
 
           unless country.present?
             msg = "Could not find Country with string '#{code_or_name}'"
