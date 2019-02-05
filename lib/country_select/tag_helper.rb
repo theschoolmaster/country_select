@@ -90,8 +90,6 @@ module CountrySelect
             code = 'United States'
           end
 
-          Rails.logger.debug code
-
           unless country.present?
             msg = "Could not find Country with string '#{code_or_name}'"
             raise CountryNotFoundError.new(msg)
