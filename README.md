@@ -26,7 +26,7 @@ gem install country_select
 Or put the following in your Gemfile
 
 ```ruby
-gem 'country_select'
+gem 'country_select', '~> 4.0'
 ```
 
 If you don't want to require `sort_alphabetical` (it depends on `unicode_utils` which is known to use lots of memory) you can opt out of using it as follows:
@@ -98,13 +98,28 @@ You can define a custom formatter which will receive an
 [`ISO3166::Country`](https://github.com/hexorx/countries/blob/master/lib/countries/country.rb)
 ```ruby
 # config/initializers/country_select.rb
+
+# Return a string to customize the text in the <option> tag, `value` attribute will remain unchanged
 CountrySelect::FORMATS[:with_alpha2] = lambda do |country|
   "#{country.name} (#{country.alpha2})"
+end
+
+# Return an array to customize <option> text, `value` and other HTML attributes
+CountrySelect::FORMATS[:with_data_attrs] = lambda do |country|
+  [
+    country.name,
+    country.alpha2,
+    {
+      'data-country-code' => country.country_code,
+      'data-alpha3' => country.alpha3
+    }
+  ]
 end
 ```
 
 ```ruby
 country_select("user", "country", format: :with_alpha2)
+country_select("user", "country", format: :with_data_attrs)
 ```
 
 ### ISO 3166-1 alpha-2 codes
